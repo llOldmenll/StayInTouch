@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">StayInTouch</string>
+    <string name="powered_by">Powered by NewsApi.org</string>
+    <string name="internet">Internet</string>
+    <string name="no_internet_msg">Connection Failed! Please check your internet connection!</string>
 </resources>

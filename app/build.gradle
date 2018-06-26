@@ -15,6 +15,7 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -47,7 +48,7 @@ dependencies {
     //MVP
     implementation "com.arello-mobile:moxy:$moxy_version"
     kapt "com.arello-mobile:moxy-compiler:$moxy_version"
-    annotationProcessor "com.arello-mobile:moxy-compiler:$moxy_version"
+//    annotationProcessor "com.arello-mobile:moxy-compiler:$moxy_version"
     implementation "com.arello-mobile:moxy-app-compat:$moxy_version"
 
     //UI

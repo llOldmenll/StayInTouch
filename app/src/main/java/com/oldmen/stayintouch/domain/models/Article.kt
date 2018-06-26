@@ -5,5 +5,8 @@ import android.arch.persistence.room.PrimaryKey
 import com.oldmen.stayintouch.utils.ARTICLES_TABLE_NAME
 
 @Entity(tableName = ARTICLES_TABLE_NAME)
-class Article(@PrimaryKey(autoGenerate = true) var id: Int) {
-}
+data class Article(@PrimaryKey val url: String,
+                   val title: String,
+                   val description: String,
+                   val urlToImage: String,
+                   val publishedAt: String)
