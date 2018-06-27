@@ -4,6 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".presentation.ui.main.MainActivity">
+
+    <!--style="@style/Widget.Shrine.Backdrop"-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="88dp">
+
+        <!--<include layout="@layout/shr_backdrop" />-->
+    </LinearLayout>
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:contentInsetStart="0dp"
+            app:navigationIcon="@drawable/drawer_open_icon"
+            app:title="@string/app_name" />
+    </android.support.design.widget.AppBarLayout>
+
+    <com.github.florent37.shapeofview.shapes.CutCornerView
+        android:id="@+id/articles_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:elevation="@dimen/tb_elevation"
+        app:shape_cutCorner_topLeftSize="?attr/actionBarSize">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorAccent"
+            android:overScrollMode="never" />
+    </com.github.florent37.shapeofview.shapes.CutCornerView>
 
 </android.support.constraint.ConstraintLayout>
