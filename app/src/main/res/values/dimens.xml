@@ -36,4 +36,6 @@
     <dimen name="grid_item_divider_size">2dp</dimen>
 
     <dimen name="tb_elevation">4dp</dimen>
+
+    <dimen name="articles_list_reveal_height">112dp</dimen>
 </resources>
