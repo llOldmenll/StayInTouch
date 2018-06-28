@@ -4,7 +4,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.oldmen.stayintouch.CustomApplication
 import com.oldmen.stayintouch.data.local.UserSessionUtils
-import com.oldmen.stayintouch.data.network.ApiService
+import com.oldmen.stayintouch.data.network.RetrofitClient
 import com.oldmen.stayintouch.domain.models.Article
 import com.oldmen.stayintouch.domain.models.ArticlesResponse
 import com.oldmen.stayintouch.domain.models.Source
@@ -28,10 +28,11 @@ class SplashPresenter : MvpPresenter<SplashView>() {
 
     suspend fun loadData() {
         try {
-            val sources = ApiService.create().getSources().await().sources
+            val sources = RetrofitClient.getApiService().getSources().await().sources
             saveSources(sources).await()
             val articles = loadArticles().await().articles
-            saveArticles(articles)
+            articles.map { article -> println(article) }
+            saveArticles(articles).await()
             viewState.startMainActivity()
         } catch (e: IOException) {
             e.printStackTrace()
@@ -48,20 +49,21 @@ class SplashPresenter : MvpPresenter<SplashView>() {
         val session: UserSession
 
         if (UserSessionUtils.isSessionCreated()) {
+            UserSessionUtils.resetPageCount()
             session = UserSessionUtils.getSession()
         } else {
             session = UserSession()
             UserSessionUtils.saveSession(session)
         }
 
-        return ApiService.create().getArticles(session.sortBy, session.source, session.pageSize,
-                session.page, session.from, session.to)
+        return RetrofitClient.getApiService().getArticles(session.sortBy, session.source,
+                session.pageSize, session.page, session.from, session.to)
     }
 
     private fun saveSources(sources: List<Source>): Deferred<Unit> {
         return async {
             val dao = CustomApplication.dataBase.getSourceDao()
-            dao.deleteAll()
+            dao.drop()
             dao.insertAll(sources)
         }
     }
@@ -69,21 +71,9 @@ class SplashPresenter : MvpPresenter<SplashView>() {
     private fun saveArticles(articles: List<Article>): Deferred<Unit> {
         return async {
             val dao = CustomApplication.dataBase.getArticleDao()
-            dao.deleteAll()
+            dao.drop()
             dao.insertAll(articles)
         }
     }
-
-//    private fun getSourcesFromDb(): Deferred<List<Source>> {
-//        return async {
-//            CustomApplication.dataBase.getSourceDao().getAll()
-//        }
-//    }
-//
-//    private fun getArticlesFromDb(): Deferred<List<Article>> {
-//        return async {
-//            CustomApplication.dataBase.getArticleDao().getAll()
-//        }
-//    }
 
 }

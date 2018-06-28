@@ -1,6 +1,26 @@
 <resources>
     <string name="app_name">Stay In Touch</string>
     <string name="powered_by">Powered by NewsApi.org</string>
+    <string name="sorted_by">Sorted by</string>
+    <string name="source">Source</string>
+    <string name="from">From:</string>
+    <string name="to">To:</string>
+    <string name="hint_date">day-month-year</string>
+    <string name="favorites">Favorites</string>
+
     <string name="internet">Internet</string>
     <string name="no_internet_msg">Connection Failed! Please check your internet connection!</string>
+    <string name="out_of_bound_date_range_msg">Can\'t provide future date!</string>
+    <string name="from_after_to_date_msg">\"From\" date must be before \"To\" date!</string>
+    <string name="to_before_from_date_msg">\"To\" date must be after \"From\" date!</string>
+
+    <string-array name="sorted_by_keys">
+        <item>Newest</item>
+        <item>Popular</item>
+    </string-array>
+
+    <string-array name="sorted_by_values">
+        <item>publishedAt</item>
+        <item>popularity</item>
+    </string-array>
 </resources>

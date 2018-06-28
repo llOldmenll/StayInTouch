@@ -7,16 +7,27 @@
     android:background="@color/colorPrimary"
     tools:context=".presentation.ui.main.MainActivity">
 
-    <!--style="@style/Widget.Shrine.Backdrop"-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingTop="88dp">
+        android:paddingBottom="@dimen/view_padding_big_plus"
+        android:paddingEnd="@dimen/view_padding_medium"
+        android:paddingStart="@dimen/backdrop_start_padding"
+        android:paddingTop="?attr/actionBarSize">
 
-        <!--<include layout="@layout/shr_backdrop" />-->
+        <include layout="@layout/back_drop_filter" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center|bottom"
+            android:paddingEnd="@dimen/backdrop_start_padding"
+            android:text="@string/powered_by"
+            tools:ignore="RtlSymmetry" />
+
     </LinearLayout>
 
     <android.support.design.widget.AppBarLayout
@@ -29,24 +40,42 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:contentInsetStart="0dp"
-            app:navigationIcon="@drawable/drawer_open_icon"
-            app:title="@string/app_name" />
+            app:navigationIcon="@drawable/ic_drawer_open"
+            app:title="@string/app_name"
+            app:titleTextColor="@color/colorLight" />
     </android.support.design.widget.AppBarLayout>
 
-    <com.github.florent37.shapeofview.shapes.CutCornerView
+    <com.github.florent37.shapeofview.shapes.RoundRectView
         android:id="@+id/articles_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         android:elevation="@dimen/tb_elevation"
-        app:shape_cutCorner_topLeftSize="?attr/actionBarSize">
+        app:shape_roundRect_topLeftRadius="@dimen/corner_radius"
+        app:shape_roundRect_topRightRadius="@dimen/corner_radius">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorAccent"
-            android:overScrollMode="never" />
-    </com.github.florent37.shapeofview.shapes.CutCornerView>
+            android:background="@color/colorLight">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                android:paddingEnd="@dimen/group_view_padding_medium"
+                android:paddingStart="@dimen/group_view_padding_medium" />
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:theme="@style/DarkProgressBar"
+                android:visibility="invisible" />
+
+        </RelativeLayout>
+    </com.github.florent37.shapeofview.shapes.RoundRectView>
 
 </android.support.constraint.ConstraintLayout>

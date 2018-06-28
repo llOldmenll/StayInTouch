@@ -4,12 +4,14 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
+import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.animation.Interpolator
 import android.widget.ImageView
 import com.oldmen.stayintouch.R
+import com.oldmen.stayintouch.presentation.mvp.main.MainPresenter
 
 /**
  * [android.view.View.OnClickListener] used to translate the product grid sheet downward on
@@ -17,7 +19,8 @@ import com.oldmen.stayintouch.R
  */
 class NavigationIconClickListener @JvmOverloads internal constructor(
         private val context: Context, private val sheet: View, private val interpolator: Interpolator? = null,
-        private val openIcon: Drawable? = null, private val closeIcon: Drawable? = null) : View.OnClickListener {
+        private val openIcon: Drawable? = null, private val closeIcon: Drawable? = null,
+        private val presenter: MainPresenter) : View.OnClickListener {
 
     private val animatorSet = AnimatorSet()
     private val height: Int
@@ -39,15 +42,18 @@ class NavigationIconClickListener @JvmOverloads internal constructor(
 
         updateIcon(view)
 
-        val translateY = height - context.resources.getDimensionPixelSize(R.dimen.articles_list_reveal_height)
+        val translateY = height - context.resources.getDimensionPixelSize(R.dimen.articles_list_reveal_height_portrait)
 
-        val animator = ObjectAnimator.ofFloat(sheet, "translationY", (if (backdropShown) translateY else 0).toFloat())
+        val animator = ObjectAnimator.ofFloat(sheet, "translationY",
+                (if (backdropShown) translateY else 0).toFloat())
         animator.duration = 500
         if (interpolator != null) {
             animator.interpolator = interpolator
         }
         animatorSet.play(animator)
         animator.start()
+
+        if (!backdropShown) presenter.loadArticlesIfNeeded()
     }
 
     private fun updateIcon(view: View) {

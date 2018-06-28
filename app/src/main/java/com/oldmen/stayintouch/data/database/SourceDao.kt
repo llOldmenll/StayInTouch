@@ -18,6 +18,6 @@ interface SourceDao {
     fun insertAll(sources: List<Source>)
 
     @Query("DELETE from $SOURCE_TABLE_NAME")
-    fun deleteAll()
+    fun drop()
 
 }
