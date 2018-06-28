@@ -82,6 +82,9 @@ dependencies {
     implementation "com.squareup.moshi:moshi:$moshi_version"
     implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
+
+    //Social network
+    implementation 'com.facebook.android:facebook-share:4.34.0'
 }
 
 kotlin {

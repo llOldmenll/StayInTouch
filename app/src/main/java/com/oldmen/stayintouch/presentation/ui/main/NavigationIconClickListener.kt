@@ -4,7 +4,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
 import android.view.View

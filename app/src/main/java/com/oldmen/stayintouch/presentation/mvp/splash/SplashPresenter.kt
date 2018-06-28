@@ -23,7 +23,7 @@ class SplashPresenter : MvpPresenter<SplashView>() {
         }
     }
 
-    suspend fun loadData() {
+    private suspend fun loadData() {
         try {
             val sources = RetrofitClient.getApiService().getSources().await().sources
             saveSources(sources).await()

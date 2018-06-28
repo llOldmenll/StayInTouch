@@ -10,9 +10,7 @@ import com.oldmen.stayintouch.R
 import com.oldmen.stayintouch.presentation.mvp.splash.SplashPresenter
 import com.oldmen.stayintouch.presentation.mvp.splash.SplashView
 import com.oldmen.stayintouch.presentation.ui.main.MainActivity
-import com.oldmen.stayintouch.utils.InternetConnection
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+
 
 class SplashActivity : MvpAppCompatActivity(), SplashView {
 

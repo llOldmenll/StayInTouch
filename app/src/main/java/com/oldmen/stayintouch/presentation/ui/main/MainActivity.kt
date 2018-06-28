@@ -34,14 +34,13 @@ import kotlinx.android.synthetic.main.back_drop_filter.*
 import java.util.*
 
 class MainActivity : MvpAppCompatActivity(), MainView {
-
     @InjectPresenter
     lateinit var presenter: MainPresenter
 
     private lateinit var adapter: ArticlesAdapter
+
     private var isLoading = false
     private val maxPage = 999
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -130,13 +129,17 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         else
             to_date_text.setText("")
 
+        btn_clear_from.setOnClickListener { _ -> presenter.clearFromDate() }
+
+        btn_clear_to.setOnClickListener { _ -> presenter.clearToDate() }
+
         from_date_text.setOnClickListener {
             val calendar = Calendar.getInstance()
 
             if (UserSessionUtils.getFrom().isNotEmpty())
                 calendar.time = DateFormatter.getDate(ISO_DATE_FORMAT, UserSessionUtils.getFrom())
 
-            createDatePicker(calendar, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            createDatePicker(calendar, DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                 calendar.set(Calendar.YEAR, year)
                 calendar.set(Calendar.MONTH, monthOfYear)
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
@@ -151,7 +154,7 @@ class MainActivity : MvpAppCompatActivity(), MainView {
             if (UserSessionUtils.getTo().isNotEmpty())
                 calendar.time = DateFormatter.getDate(ISO_DATE_FORMAT, UserSessionUtils.getTo())
 
-            createDatePicker(calendar, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            createDatePicker(calendar, DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                 calendar.set(Calendar.YEAR, year)
                 calendar.set(Calendar.MONTH, monthOfYear)
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
@@ -233,5 +236,13 @@ class MainActivity : MvpAppCompatActivity(), MainView {
 
     override fun hideProgress() {
         progress.visibility = INVISIBLE
+    }
+
+    override fun clearFromDate() {
+        from_date_text.setText("")
+    }
+
+    override fun clearToDate() {
+        to_date_text.setText("")
     }
 }

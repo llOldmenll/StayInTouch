@@ -1,5 +1,7 @@
 package com.oldmen.stayintouch.presentation.ui.main
 
+import android.content.Intent
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.facebook.share.model.ShareLinkContent
+import com.facebook.share.widget.ShareButton
 import com.oldmen.stayintouch.R
 import com.oldmen.stayintouch.domain.models.Article
 import com.oldmen.stayintouch.presentation.mvp.main.MainPresenter
@@ -39,14 +43,21 @@ class ArticlesAdapter(var articles: List<Article>, val presenter: MainPresenter)
     }
 
     inner class ArticlesHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var logo: ImageView = itemView.findViewById(R.id.logo_article)
-        var title: TextView = itemView.findViewById(R.id.title_article)
-        var description: TextView = itemView.findViewById(R.id.description_article)
-        var favoriteBtn: ImageButton = itemView.findViewById(R.id.favorite_btn_article)
-        var shareBtn: ImageButton = itemView.findViewById(R.id.share_btn_article)
-        var time: TextView = itemView.findViewById(R.id.time_article)
+        private var logo: ImageView = itemView.findViewById(R.id.logo_article)
+        private var title: TextView = itemView.findViewById(R.id.title_article)
+        private var description: TextView = itemView.findViewById(R.id.description_article)
+        private var favoriteBtn: ImageButton = itemView.findViewById(R.id.favorite_btn_article)
+        private var shareBtn: ImageButton = itemView.findViewById(R.id.share_btn_article)
+        private var fbBtn: ImageButton = itemView.findViewById(R.id.facebook_btn)
+        private var fbShare: ShareButton = itemView.findViewById(R.id.facebook_share)
+        private var time: TextView = itemView.findViewById(R.id.time_article)
 
         fun bindView(article: Article) {
+            //Init text fields
+            title.text = article.title
+            description.text = article.description
+            time.text = DateFormatter.formatStrToStr(ISO_DATE_FORMAT, ARTICLE_DATE_FORMAT, article.publishedAt)
+            //Init article image
             if (article.urlToImage.isNotEmpty())
                 GlideApp.with(itemView)
                         .load(article.urlToImage)
@@ -54,12 +65,11 @@ class ArticlesAdapter(var articles: List<Article>, val presenter: MainPresenter)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .thumbnail()
                         .into(logo)
-            else
-                logo.setImageDrawable(itemView.resources.getDrawable(R.drawable.loading_preview))
-
-            title.text = article.title
-            description.text = article.description
-            time.text = DateFormatter.formatStrToStr(ISO_DATE_FORMAT, ARTICLE_DATE_FORMAT, article.publishedAt)
+            else logo.setImageDrawable(itemView.resources.getDrawable(R.drawable.loading_preview))
+            logo.setOnClickListener { _ ->
+                itemView.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(article.url)))
+            }
+            //Init favorite btn
             favoriteBtn.setImageResource(
                     if (article.isFavorite) R.drawable.ic_favorite
                     else R.drawable.ic_favorite_border)
@@ -67,6 +77,21 @@ class ArticlesAdapter(var articles: List<Article>, val presenter: MainPresenter)
                 article.isFavorite = !article.isFavorite
                 presenter.updateFavorite(article)
             }
+            //Init facebook btn
+            fbShare.shareContent = ShareLinkContent.Builder()
+                    .setContentUrl(Uri.parse(article.url))
+                    .build()
+            fbBtn.setOnClickListener { _ -> fbShare.performClick() }
+            //Init share btn
+            shareBtn.setOnClickListener { _ -> shareLink(article.url, article.title) }
+        }
+
+        private fun shareLink(link: String, title: String) {
+            val sendIntent = Intent()
+            sendIntent.action = Intent.ACTION_SEND
+            sendIntent.putExtra(Intent.EXTRA_TEXT, link)
+            sendIntent.type = "text/plain"
+            itemView.context.startActivity(Intent.createChooser(sendIntent, title))
         }
     }
 }

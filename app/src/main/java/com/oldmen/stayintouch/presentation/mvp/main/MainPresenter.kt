@@ -63,26 +63,34 @@ class MainPresenter : MvpPresenter<MainView>() {
             viewState.showMsg(CustomApplication.getContext().getString(R.string.out_of_bound_date_range_msg))
             return false
         } else if (isFromDate) {
-            return if (UserSessionUtils.getTo().isEmpty()) {
-                UserSessionUtils.setFrom(DateFormatter.formatDateToStr(ISO_DATE_FORMAT, date))
-                true
-            } else if (date.after(DateFormatter.getDate(ISO_DATE_FORMAT, UserSessionUtils.getTo()))) {
-                viewState.showMsg(CustomApplication.getContext().getString(R.string.from_after_to_date_msg))
-                false
-            } else {
-                UserSessionUtils.setFrom(DateFormatter.formatDateToStr(ISO_DATE_FORMAT, date))
-                true
+            return when {
+                UserSessionUtils.getTo().isEmpty() -> {
+                    UserSessionUtils.setFrom(DateFormatter.formatDateToStr(ISO_DATE_FORMAT, date))
+                    true
+                }
+                date.after(DateFormatter.getDate(ISO_DATE_FORMAT, UserSessionUtils.getTo())) -> {
+                    viewState.showMsg(CustomApplication.getContext().getString(R.string.from_after_to_date_msg))
+                    false
+                }
+                else -> {
+                    UserSessionUtils.setFrom(DateFormatter.formatDateToStr(ISO_DATE_FORMAT, date))
+                    true
+                }
             }
         } else if (!isFromDate) {
-            return if (UserSessionUtils.getFrom().isEmpty()) {
-                UserSessionUtils.setTo(DateFormatter.formatDateToStr(ISO_DATE_FORMAT, date))
-                true
-            } else if (date.before(DateFormatter.getDate(ISO_DATE_FORMAT, UserSessionUtils.getFrom()))) {
-                viewState.showMsg(CustomApplication.getContext().getString(R.string.to_before_from_date_msg))
-                false
-            } else {
-                UserSessionUtils.setTo(DateFormatter.formatDateToStr(ISO_DATE_FORMAT, date))
-                true
+            return when {
+                UserSessionUtils.getFrom().isEmpty() -> {
+                    UserSessionUtils.setTo(DateFormatter.formatDateToStr(ISO_DATE_FORMAT, date))
+                    true
+                }
+                date.before(DateFormatter.getDate(ISO_DATE_FORMAT, UserSessionUtils.getFrom())) -> {
+                    viewState.showMsg(CustomApplication.getContext().getString(R.string.to_before_from_date_msg))
+                    false
+                }
+                else -> {
+                    UserSessionUtils.setTo(DateFormatter.formatDateToStr(ISO_DATE_FORMAT, date))
+                    true
+                }
             }
         } else return false
     }
@@ -104,6 +112,22 @@ class MainPresenter : MvpPresenter<MainView>() {
                 else
                     db.getFavoriteArticleDao().delete(article.toFavoriteArticle())
             }
+        }
+    }
+
+    fun clearFromDate() {
+        if (UserSessionUtils.getFrom().isNotEmpty()) {
+            UserSessionUtils.setFrom("")
+            UserSessionUtils.setPage(0)
+            viewState.clearFromDate()
+        }
+    }
+
+    fun clearToDate() {
+        if (UserSessionUtils.getTo().isNotEmpty()) {
+            UserSessionUtils.setTo("")
+            UserSessionUtils.setPage(0)
+            viewState.clearToDate()
         }
     }
 

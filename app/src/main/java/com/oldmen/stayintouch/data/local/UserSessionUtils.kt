@@ -2,7 +2,6 @@ package com.oldmen.stayintouch.data.local
 
 import android.content.Context.MODE_PRIVATE
 import com.oldmen.stayintouch.CustomApplication
-import com.oldmen.stayintouch.domain.models.Source
 import com.oldmen.stayintouch.domain.models.UserSession
 
 object UserSessionUtils {
@@ -38,8 +37,6 @@ object UserSessionUtils {
                 from = sharedPref.getString(FROM, ""),
                 to = sharedPref.getString(TO, ""))
     }
-
-    fun deleteSession() = getSharedPref().edit().clear().apply()
 
     fun setSortBy(sort: String) {
         getSharedPref().edit().putString(SORT_BY, sort).apply()

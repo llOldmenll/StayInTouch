@@ -12,6 +12,10 @@ interface MainView : BaseView {
 
     fun setSources(sources: List<Source>)
 
+    fun clearFromDate()
+
+    fun clearToDate()
+
     @StateStrategyType(SkipStrategy::class)
     fun showProgress()
 

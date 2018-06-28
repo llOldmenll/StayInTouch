@@ -23,4 +23,6 @@
         <item>publishedAt</item>
         <item>popularity</item>
     </string-array>
+
+    <string name="facebook_app_id">1552486068391678</string>
 </resources>

@@ -95,6 +95,18 @@
             android:textSize="@dimen/text_size_large"
             tools:ignore="TextFields"
             tools:text="12-Jun-2019" />
+
+        <ImageButton
+            android:id="@+id/btn_clear_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:alpha="0.7"
+            android:background="@android:color/transparent"
+            android:paddingEnd="@dimen/view_padding_min"
+            android:paddingStart="@dimen/view_padding_min"
+            android:src="@drawable/ic_drawer_close"
+            tools:ignore="ContentDescription" />
     </LinearLayout>
 
     <LinearLayout
@@ -111,7 +123,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:padding="@dimen/text_padding_min"
-            android:text="@string/from"
+            android:text="@string/to"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/text_size_large" />
 
@@ -130,5 +142,17 @@
             android:textSize="@dimen/text_size_large"
             tools:ignore="TextFields"
             tools:text="25-Jun-2019" />
+
+        <ImageButton
+            android:id="@+id/btn_clear_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:alpha="0.7"
+            android:background="@android:color/transparent"
+            android:paddingEnd="@dimen/view_padding_min"
+            android:paddingStart="@dimen/view_padding_min"
+            android:src="@drawable/ic_drawer_close"
+            tools:ignore="ContentDescription" />
     </LinearLayout>
 </merge>

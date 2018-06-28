@@ -6,7 +6,6 @@ import android.arch.persistence.room.OnConflictStrategy.REPLACE
 import android.arch.persistence.room.Query
 import com.oldmen.stayintouch.domain.models.Source
 import com.oldmen.stayintouch.utils.SOURCE_TABLE_NAME
-import kotlinx.coroutines.experimental.Deferred
 
 @Dao
 interface SourceDao {
