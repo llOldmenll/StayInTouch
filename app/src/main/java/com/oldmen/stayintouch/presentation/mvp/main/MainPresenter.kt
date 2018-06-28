@@ -21,20 +21,20 @@ import java.io.IOException
 import java.util.*
 
 @InjectViewState
-class MainPresenter(private val lifecycleOwner: LifecycleOwner) : MvpPresenter<MainView>() {
+class MainPresenter : MvpPresenter<MainView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
-        getArticles().observe(lifecycleOwner,
-                Observer { articles ->
-                    if (articles != null) viewState.updateRecycler(articles)
-                })
-
         launch {
             val sources = getSourcesFromDb().await()
             viewState.setSources(sources)
         }
+    }
+
+    fun observeArticles(lifecycleOwner: LifecycleOwner) {
+        getArticles().observe(lifecycleOwner, Observer { articles ->
+            if (articles != null) viewState.updateRecycler(articles)
+        })
     }
 
     fun loadNextPage(dropArticlesTable: Boolean = false) {

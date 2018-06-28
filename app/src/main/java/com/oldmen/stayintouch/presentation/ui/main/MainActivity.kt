@@ -16,7 +16,6 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.oldmen.stayintouch.R
 import com.oldmen.stayintouch.data.local.UserSessionUtils
 import com.oldmen.stayintouch.domain.models.Article
@@ -39,9 +38,6 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     private lateinit var adapter: ArticlesAdapter
     private var isLoading = false
     private val maxPage = 999
-
-    @ProvidePresenter
-    fun providePresenter(): MainPresenter = MainPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +76,7 @@ class MainActivity : MvpAppCompatActivity(), MainView {
                 }
             }
         })
+        presenter.observeArticles(this)
     }
 
     private fun initSortedSpinner() {
