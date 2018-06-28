@@ -7,19 +7,17 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.oldmen.stayintouch.R
-import com.oldmen.stayintouch.domain.models.Article
 import com.oldmen.stayintouch.domain.models.FavoriteArticle
 import com.oldmen.stayintouch.presentation.mvp.favorites.FavoritesPresenter
-import com.oldmen.stayintouch.presentation.mvp.main.MainPresenter
-import com.oldmen.stayintouch.presentation.ui.main.ArticlesAdapter
 import com.oldmen.stayintouch.utils.ARTICLE_DATE_FORMAT
 import com.oldmen.stayintouch.utils.DateFormatter
 import com.oldmen.stayintouch.utils.GlideApp
 import com.oldmen.stayintouch.utils.ISO_DATE_FORMAT
 
-class FavoriteArticleAdapter(var articles: List<FavoriteArticle>, val presenter: FavoritesPresenter) : RecyclerView.Adapter<FavoriteArticleAdapter.FavoritesArticlesHolder>() {
+
+class FavoriteArticleAdapter(var articles: List<FavoriteArticle>,
+                             val presenter: FavoritesPresenter) : RecyclerView.Adapter<FavoriteArticleAdapter.FavoritesArticlesHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoritesArticlesHolder {
         val view = LayoutInflater.from(parent.context)

@@ -11,6 +11,9 @@ interface FavoriteArticleDao {
     @Query("SELECT * FROM $FAVORITE_ARTICLES_TABLE_NAME")
     fun getAll(): LiveData<List<FavoriteArticle>>
 
+    @Query("SELECT * FROM $FAVORITE_ARTICLES_TABLE_NAME")
+    fun getList(): List<FavoriteArticle>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg articles: FavoriteArticle)
 

@@ -9,13 +9,11 @@ import com.oldmen.stayintouch.CustomApplication
 import com.oldmen.stayintouch.R
 import com.oldmen.stayintouch.data.local.UserSessionUtils
 import com.oldmen.stayintouch.data.network.RetrofitClient
-import com.oldmen.stayintouch.domain.models.Article
-import com.oldmen.stayintouch.domain.models.ArticlesResponse
-import com.oldmen.stayintouch.domain.models.Source
-import com.oldmen.stayintouch.domain.models.UserSession
+import com.oldmen.stayintouch.domain.models.*
 import com.oldmen.stayintouch.utils.DateFormatter
 import com.oldmen.stayintouch.utils.ISO_DATE_FORMAT
 import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.android.UI
 import retrofit2.HttpException
 import java.io.IOException
 import java.util.*
@@ -31,17 +29,22 @@ class MainPresenter : MvpPresenter<MainView>() {
         }
     }
 
-    fun observeArticles(lifecycleOwner: LifecycleOwner) {
+    fun subscribeToArticles(lifecycleOwner: LifecycleOwner) {
         getArticles().observe(lifecycleOwner, Observer { articles ->
             if (articles != null) viewState.updateRecycler(articles)
         })
     }
 
     fun loadNextPage(dropArticlesTable: Boolean = false) {
-        launch {
+        launch(UI) {
             try {
                 if (dropArticlesTable) dropArticles().await()
+                val favoritesArticles = getFavorites().await()
                 val articles = loadArticles().await().articles
+                articles.map { article ->
+                    if (favoritesArticles.contains(article.toFavoriteArticle()))
+                        article.isFavorite = true
+                }
                 saveArticles(articles).await()
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -139,5 +142,11 @@ class MainPresenter : MvpPresenter<MainView>() {
 
     private fun dropArticles(): Deferred<Unit> {
         return async { CustomApplication.dataBase.getArticleDao().drop() }
+    }
+
+    private fun getFavorites(): Deferred<List<FavoriteArticle>> {
+        return async {
+            CustomApplication.dataBase.getFavoriteArticleDao().getList()
+        }
     }
 }

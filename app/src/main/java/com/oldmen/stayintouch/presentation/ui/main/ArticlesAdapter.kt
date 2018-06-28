@@ -16,6 +16,7 @@ import com.oldmen.stayintouch.utils.DateFormatter
 import com.oldmen.stayintouch.utils.GlideApp
 import com.oldmen.stayintouch.utils.ISO_DATE_FORMAT
 
+
 class ArticlesAdapter(var articles: List<Article>, val presenter: MainPresenter) : RecyclerView.Adapter<ArticlesAdapter.ArticlesHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticlesHolder {

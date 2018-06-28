@@ -63,9 +63,11 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipToPadding="false"
                 android:overScrollMode="never"
-                android:paddingEnd="@dimen/group_view_padding_medium"
-                android:paddingStart="@dimen/group_view_padding_medium" />
+                android:paddingBottom="@dimen/group_view_padding_medium"
+                android:paddingEnd="@dimen/group_view_padding_min"
+                android:paddingStart="@dimen/group_view_padding_min" />
 
             <ProgressBar
                 android:id="@+id/progress"

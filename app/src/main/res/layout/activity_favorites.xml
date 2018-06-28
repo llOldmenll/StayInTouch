@@ -4,6 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".presentation.ui.favorites.FavoritesActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/favorites"
+            app:titleTextColor="@color/colorLight" />
+    </android.support.design.widget.AppBarLayout>
+
+    <com.github.florent37.shapeofview.shapes.RoundRectView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:elevation="@dimen/tb_elevation"
+        app:shape_roundRect_topLeftRadius="@dimen/corner_radius"
+        app:shape_roundRect_topRightRadius="@dimen/corner_radius">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorLight"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingBottom="@dimen/group_view_padding_medium"
+            android:paddingEnd="@dimen/group_view_padding_min"
+            android:paddingStart="@dimen/group_view_padding_min" />
+    </com.github.florent37.shapeofview.shapes.RoundRectView>
 
 </android.support.constraint.ConstraintLayout>

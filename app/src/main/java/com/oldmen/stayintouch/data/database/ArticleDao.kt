@@ -1,11 +1,9 @@
 package com.oldmen.stayintouch.data.database
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.arch.persistence.room.*
 import com.oldmen.stayintouch.domain.models.Article
 import com.oldmen.stayintouch.utils.ARTICLES_TABLE_NAME
-import kotlinx.coroutines.experimental.Deferred
 
 @Dao
 interface ArticleDao {

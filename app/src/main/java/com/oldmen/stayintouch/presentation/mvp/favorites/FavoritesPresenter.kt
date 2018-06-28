@@ -11,10 +11,9 @@ import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 
 @InjectViewState
-class FavoritesPresenter(private val lifecycleOwner: LifecycleOwner) : MvpPresenter<FavoritesView>() {
+class FavoritesPresenter : MvpPresenter<FavoritesView>() {
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
+    fun subscribeToArticles(lifecycleOwner: LifecycleOwner) {
         CustomApplication.dataBase.getFavoriteArticleDao().getAll().observe(lifecycleOwner,
                 Observer { favoriteArticles ->
                     if (favoriteArticles != null) viewState.updateRecycler(favoriteArticles)

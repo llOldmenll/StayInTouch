@@ -5,10 +5,7 @@ import com.arellomobile.mvp.MvpPresenter
 import com.oldmen.stayintouch.CustomApplication
 import com.oldmen.stayintouch.data.local.UserSessionUtils
 import com.oldmen.stayintouch.data.network.RetrofitClient
-import com.oldmen.stayintouch.domain.models.Article
-import com.oldmen.stayintouch.domain.models.ArticlesResponse
-import com.oldmen.stayintouch.domain.models.Source
-import com.oldmen.stayintouch.domain.models.UserSession
+import com.oldmen.stayintouch.domain.models.*
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -30,7 +27,12 @@ class SplashPresenter : MvpPresenter<SplashView>() {
         try {
             val sources = RetrofitClient.getApiService().getSources().await().sources
             saveSources(sources).await()
+            val favoritesArticles = getFavorites().await()
             val articles = loadArticles().await().articles
+            articles.map { article ->
+                if (favoritesArticles.contains(article.toFavoriteArticle()))
+                    article.isFavorite = true
+            }
             articles.map { article -> println(article) }
             saveArticles(articles).await()
             viewState.startMainActivity()
@@ -60,10 +62,15 @@ class SplashPresenter : MvpPresenter<SplashView>() {
                 session.pageSize, session.page, session.from, session.to)
     }
 
+    private fun getFavorites(): Deferred<List<FavoriteArticle>> {
+        return async {
+            CustomApplication.dataBase.getFavoriteArticleDao().getList()
+        }
+    }
+
     private fun saveSources(sources: List<Source>): Deferred<Unit> {
         return async {
             val dao = CustomApplication.dataBase.getSourceDao()
-            dao.drop()
             dao.insertAll(sources)
         }
     }

@@ -1,8 +1,11 @@
 package com.oldmen.stayintouch.presentation.ui.main
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.os.Bundle
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
@@ -61,9 +64,14 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     }
 
     private fun initRecycler() {
+        val linearManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        val gridManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+
         adapter = ArticlesAdapter(emptyList(), presenter)
-        recycler_view.layoutManager = LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false)
+        recycler_view.layoutManager =
+                if (resources.configuration.orientation == ORIENTATION_PORTRAIT) linearManager
+                else gridManager
+
         recycler_view.adapter = adapter
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
@@ -76,7 +84,7 @@ class MainActivity : MvpAppCompatActivity(), MainView {
                 }
             }
         })
-        presenter.observeArticles(this)
+        presenter.subscribeToArticles(this)
     }
 
     private fun initSortedSpinner() {
@@ -210,7 +218,13 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     }
 
     override fun showNoInternetDialog() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        hideProgress()
+        AlertDialog.Builder(this, R.style.DialogTheme)
+                .setTitle(getString(R.string.internet))
+                .setMessage(getString(R.string.no_internet_msg))
+                .setCancelable(false)
+                .setPositiveButton(getString(android.R.string.ok), null)
+                .show()
     }
 
     override fun showProgress() {

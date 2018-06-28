@@ -2,6 +2,8 @@
     <dimen name="group_view_padding_micro">4dp</dimen>
     <dimen name="group_view_padding_min">8dp</dimen>
     <dimen name="group_view_padding_medium">16dp</dimen>
+    <dimen name="view_padding_min">8dp</dimen>
+    <dimen name="view_padding_min_plus">12dp</dimen>
     <dimen name="view_padding_medium">16dp</dimen>
     <dimen name="view_padding_big">32dp</dimen>
     <dimen name="view_padding_big_plus">42dp</dimen>
@@ -45,6 +47,7 @@
     <dimen name="backdrop_start_padding">72dp</dimen>
 
     <dimen name="article_image_height_portrait">176dp</dimen>
+    <dimen name="article_image_height_landscape">152dp</dimen>
     <dimen name="tiny_image_size">18dp</dimen>
     <dimen name="corner_radius">16dp</dimen>
 </resources>

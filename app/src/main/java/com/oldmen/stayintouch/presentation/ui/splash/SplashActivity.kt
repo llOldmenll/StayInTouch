@@ -39,12 +39,7 @@ class SplashActivity : MvpAppCompatActivity(), SplashView {
                 .setMessage(getString(R.string.no_internet_msg))
                 .setCancelable(false)
                 .setPositiveButton(getString(android.R.string.ok))
-                { _, _ ->
-                    if (InternetConnection.checkConnection())
-                        launch(UI) { presenter.loadData() }
-                    else
-                        showNoInternetDialog()
-                }
+                { _, _ -> startMainActivity() }
                 .setNegativeButton(getString(android.R.string.cancel))
                 { _, _ ->
                     finish()
