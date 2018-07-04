@@ -1,6 +1,5 @@
 package com.oldmen.stayintouch.presentation.ui.main
 
-import android.content.Intent
 import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -21,7 +20,7 @@ import com.oldmen.stayintouch.utils.GlideApp
 import com.oldmen.stayintouch.utils.ISO_DATE_FORMAT
 
 
-class ArticlesAdapter(var articles: List<Article>, val presenter: MainPresenter) : RecyclerView.Adapter<ArticlesAdapter.ArticlesHolder>() {
+class ArticlesAdapter(var articles: List<Article>, val listener: ArticleListener) : RecyclerView.Adapter<ArticlesAdapter.ArticlesHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticlesHolder {
         val view = LayoutInflater.from(parent.context)
@@ -66,32 +65,30 @@ class ArticlesAdapter(var articles: List<Article>, val presenter: MainPresenter)
                         .thumbnail()
                         .into(logo)
             else logo.setImageDrawable(itemView.resources.getDrawable(R.drawable.loading_preview))
-            logo.setOnClickListener { _ ->
-                itemView.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(article.url)))
-            }
+            logo.setOnClickListener { _ -> listener.onOpenArticleClicked(article.url) }
             //Init favorite btn
             favoriteBtn.setImageResource(
                     if (article.isFavorite) R.drawable.ic_favorite
                     else R.drawable.ic_favorite_border)
-            favoriteBtn.setOnClickListener {
-                article.isFavorite = !article.isFavorite
-                presenter.updateFavorite(article)
-            }
+            favoriteBtn.setOnClickListener { listener.onFavoriteClicked(article) }
             //Init facebook btn
             fbShare.shareContent = ShareLinkContent.Builder()
                     .setContentUrl(Uri.parse(article.url))
                     .build()
             fbBtn.setOnClickListener { _ -> fbShare.performClick() }
             //Init share btn
-            shareBtn.setOnClickListener { _ -> shareLink(article.url, article.title) }
+            shareBtn.setOnClickListener { _ -> listener.onGlobalShareClicked(article.url, article.title) }
         }
 
-        private fun shareLink(link: String, title: String) {
-            val sendIntent = Intent()
-            sendIntent.action = Intent.ACTION_SEND
-            sendIntent.putExtra(Intent.EXTRA_TEXT, link)
-            sendIntent.type = "text/plain"
-            itemView.context.startActivity(Intent.createChooser(sendIntent, title))
-        }
     }
+
+    interface ArticleListener {
+
+        fun onGlobalShareClicked(articleUrl: String, articleTitle: String)
+
+        fun onFavoriteClicked(article: Article)
+
+        fun onOpenArticleClicked(articleUrl: String)
+    }
+
 }

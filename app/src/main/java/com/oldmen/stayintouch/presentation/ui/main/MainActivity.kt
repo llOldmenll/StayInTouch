@@ -17,7 +17,6 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.oldmen.stayintouch.R
 import com.oldmen.stayintouch.data.local.UserSessionUtils
@@ -25,6 +24,7 @@ import com.oldmen.stayintouch.domain.models.Article
 import com.oldmen.stayintouch.domain.models.Source
 import com.oldmen.stayintouch.presentation.mvp.main.MainPresenter
 import com.oldmen.stayintouch.presentation.mvp.main.MainView
+import com.oldmen.stayintouch.presentation.ui.base.BaseActivity
 import com.oldmen.stayintouch.presentation.ui.favorites.FavoritesActivity
 import com.oldmen.stayintouch.utils.ARTICLE_DATE_FORMAT
 import com.oldmen.stayintouch.utils.DateFormatter
@@ -33,7 +33,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.back_drop_filter.*
 import java.util.*
 
-class MainActivity : MvpAppCompatActivity(), MainView {
+class MainActivity : BaseActivity(), MainView {
     @InjectPresenter
     lateinit var presenter: MainPresenter
 
@@ -66,7 +66,21 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         val linearManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         val gridManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
 
-        adapter = ArticlesAdapter(emptyList(), presenter)
+        adapter = ArticlesAdapter(emptyList(), object : ArticlesAdapter.ArticleListener {
+            override fun onGlobalShareClicked(articleUrl: String, articleTitle: String) {
+                globalUrlShare(articleUrl, articleTitle)
+            }
+
+            override fun onFavoriteClicked(article: Article) {
+                article.isFavorite = !article.isFavorite
+                presenter.updateFavorite(article)
+            }
+
+            override fun onOpenArticleClicked(articleUrl: String) {
+                openArticle(articleUrl)
+            }
+
+        })
         recycler_view.layoutManager =
                 if (resources.configuration.orientation == ORIENTATION_PORTRAIT) linearManager
                 else gridManager
