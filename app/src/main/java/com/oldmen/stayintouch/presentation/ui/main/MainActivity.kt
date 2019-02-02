@@ -87,9 +87,9 @@ class MainActivity : BaseActivity(), MainView {
 
         recycler_view.adapter = adapter
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView!!.layoutManager as LinearLayoutManager
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 if (layoutManager.findLastVisibleItemPosition() >= adapter.itemCount - 5
                         && UserSessionUtils.getPage() < maxPage && !isLoading) {
                     isLoading = true

@@ -1,6 +1,6 @@
 package com.oldmen.stayintouch.data.network
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.oldmen.stayintouch.utils.API_BASE_URL
 import com.oldmen.stayintouch.utils.NullToEmptyStringAdapter
 import com.squareup.moshi.Moshi

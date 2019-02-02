@@ -12,19 +12,22 @@ import com.oldmen.stayintouch.data.network.RetrofitClient
 import com.oldmen.stayintouch.domain.models.*
 import com.oldmen.stayintouch.utils.DateFormatter
 import com.oldmen.stayintouch.utils.ISO_DATE_FORMAT
-import kotlinx.coroutines.experimental.*
-import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.*
 import retrofit2.HttpException
 import java.io.IOException
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
-class MainPresenter : MvpPresenter<MainView>() {
+class MainPresenter : MvpPresenter<MainView>(), CoroutineScope {
+
+    private val job = Job()
+    override val coroutineContext: CoroutineContext = Dispatchers.IO + job
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         launch {
-            val sources = getSourcesFromDb().await()
+            val sources = getSourcesFromDbAsync().await()
             viewState.setSources(sources)
         }
     }
@@ -36,16 +39,16 @@ class MainPresenter : MvpPresenter<MainView>() {
     }
 
     fun loadNextPage(dropArticlesTable: Boolean = false) {
-        launch(UI) {
+        launch(Dispatchers.Main) {
             try {
-                if (dropArticlesTable) dropArticles().await()
-                val favoritesArticles = getFavorites().await()
-                val articles = loadArticles().await().articles
+                if (dropArticlesTable) dropArticlesAsync().await()
+                val favoritesArticles = getFavoritesAsync().await()
+                val articles = loadArticlesAsync().await().articles
                 articles.map { article ->
                     if (favoritesArticles.contains(article.toFavoriteArticle()))
                         article.isFavorite = true
                 }
-                saveArticles(articles).await()
+                saveArticlesAsync(articles).await()
             } catch (e: IOException) {
                 e.printStackTrace()
                 viewState.showNoInternetDialog()
@@ -104,7 +107,7 @@ class MainPresenter : MvpPresenter<MainView>() {
 
     fun updateFavorite(article: Article) {
         launch {
-            withContext(DefaultDispatcher) {
+            withContext(Dispatchers.Default) {
                 val db = CustomApplication.dataBase
                 db.getArticleDao().update(article)
                 if (article.isFavorite)
@@ -135,13 +138,13 @@ class MainPresenter : MvpPresenter<MainView>() {
         return CustomApplication.dataBase.getArticleDao().getAll()
     }
 
-    private fun getSourcesFromDb(): Deferred<List<Source>> {
+    private fun getSourcesFromDbAsync(): Deferred<List<Source>> {
         return async {
             CustomApplication.dataBase.getSourceDao().getAll()
         }
     }
 
-    private fun loadArticles(): Deferred<ArticlesResponse> {
+    private fun loadArticlesAsync(): Deferred<ArticlesResponse> {
         val session: UserSession
 
         if (UserSessionUtils.isSessionCreated()) {
@@ -153,22 +156,22 @@ class MainPresenter : MvpPresenter<MainView>() {
         session.page += 1
         UserSessionUtils.saveSession(session)
 
-        return RetrofitClient.getApiService().getArticles(session.sortBy, session.source,
+        return RetrofitClient.getApiService().getArticlesAsync(session.sortBy, session.source,
                 session.pageSize, session.page, session.from, session.to)
     }
 
-    private fun saveArticles(articles: List<Article>): Deferred<Unit> {
+    private fun saveArticlesAsync(articles: List<Article>): Deferred<Unit> {
         return async {
             val dao = CustomApplication.dataBase.getArticleDao()
             dao.insertAll(articles)
         }
     }
 
-    private fun dropArticles(): Deferred<Unit> {
+    private fun dropArticlesAsync(): Deferred<Unit> {
         return async { CustomApplication.dataBase.getArticleDao().drop() }
     }
 
-    private fun getFavorites(): Deferred<List<FavoriteArticle>> {
+    private fun getFavoritesAsync(): Deferred<List<FavoriteArticle>> {
         return async {
             CustomApplication.dataBase.getFavoriteArticleDao().getList()
         }

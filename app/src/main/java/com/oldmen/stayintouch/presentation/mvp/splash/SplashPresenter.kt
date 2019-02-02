@@ -6,35 +6,36 @@ import com.oldmen.stayintouch.CustomApplication
 import com.oldmen.stayintouch.data.local.UserSessionUtils
 import com.oldmen.stayintouch.data.network.RetrofitClient
 import com.oldmen.stayintouch.domain.models.*
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.*
 import retrofit2.HttpException
 import java.io.IOException
+import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
-class SplashPresenter : MvpPresenter<SplashView>() {
+class SplashPresenter : MvpPresenter<SplashView>(), CoroutineScope {
+
+    private val job = Job()
+    override val coroutineContext: CoroutineContext = Dispatchers.IO + job
 
     override fun attachView(view: SplashView?) {
         super.attachView(view)
-        launch(UI) {
+        launch(Dispatchers.Main) {
             loadData()
         }
     }
 
     private suspend fun loadData() {
         try {
-            val sources = RetrofitClient.getApiService().getSources().await().sources
-            saveSources(sources).await()
-            val favoritesArticles = getFavorites().await()
-            val articles = loadArticles().await().articles
+            val sources = RetrofitClient.getApiService().getSourcesAsync().await().sources
+            saveSourcesAsync(sources).await()
+            val favoritesArticles = getFavoritesAsync().await()
+            val articles = loadArticlesAsync().await().articles
             articles.map { article ->
                 if (favoritesArticles.contains(article.toFavoriteArticle()))
                     article.isFavorite = true
             }
             articles.map { article -> println(article) }
-            saveArticles(articles).await()
+            saveArticlesAsync(articles).await()
             viewState.startMainActivity()
         } catch (e: IOException) {
             e.printStackTrace()
@@ -47,7 +48,7 @@ class SplashPresenter : MvpPresenter<SplashView>() {
         }
     }
 
-    private fun loadArticles(): Deferred<ArticlesResponse> {
+    private fun loadArticlesAsync(): Deferred<ArticlesResponse> {
         val session: UserSession
 
         if (UserSessionUtils.isSessionCreated()) {
@@ -58,24 +59,24 @@ class SplashPresenter : MvpPresenter<SplashView>() {
             UserSessionUtils.saveSession(session)
         }
 
-        return RetrofitClient.getApiService().getArticles(session.sortBy, session.source,
+        return RetrofitClient.getApiService().getArticlesAsync(session.sortBy, session.source,
                 session.pageSize, session.page, session.from, session.to)
     }
 
-    private fun getFavorites(): Deferred<List<FavoriteArticle>> {
+    private fun getFavoritesAsync(): Deferred<List<FavoriteArticle>> {
         return async {
             CustomApplication.dataBase.getFavoriteArticleDao().getList()
         }
     }
 
-    private fun saveSources(sources: List<Source>): Deferred<Unit> {
+    private fun saveSourcesAsync(sources: List<Source>): Deferred<Unit> {
         return async {
             val dao = CustomApplication.dataBase.getSourceDao()
             dao.insertAll(sources)
         }
     }
 
-    private fun saveArticles(articles: List<Article>): Deferred<Unit> {
+    private fun saveArticlesAsync(articles: List<Article>): Deferred<Unit> {
         return async {
             val dao = CustomApplication.dataBase.getArticleDao()
             dao.drop()

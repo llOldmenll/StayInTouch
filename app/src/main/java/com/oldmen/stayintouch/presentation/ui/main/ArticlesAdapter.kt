@@ -65,7 +65,7 @@ class ArticlesAdapter(var articles: List<Article>, val listener: ArticleListener
                         .thumbnail()
                         .into(logo)
             else logo.setImageDrawable(itemView.resources.getDrawable(R.drawable.loading_preview))
-            logo.setOnClickListener { _ -> listener.onOpenArticleClicked(article.url) }
+            logo.setOnClickListener { listener.onOpenArticleClicked(article.url) }
             //Init favorite btn
             favoriteBtn.setImageResource(
                     if (article.isFavorite) R.drawable.ic_favorite
@@ -75,9 +75,9 @@ class ArticlesAdapter(var articles: List<Article>, val listener: ArticleListener
             fbShare.shareContent = ShareLinkContent.Builder()
                     .setContentUrl(Uri.parse(article.url))
                     .build()
-            fbBtn.setOnClickListener { _ -> fbShare.performClick() }
+            fbBtn.setOnClickListener { fbShare.performClick() }
             //Init share btn
-            shareBtn.setOnClickListener { _ -> listener.onGlobalShareClicked(article.url, article.title) }
+            shareBtn.setOnClickListener { listener.onGlobalShareClicked(article.url, article.title) }
         }
 
     }

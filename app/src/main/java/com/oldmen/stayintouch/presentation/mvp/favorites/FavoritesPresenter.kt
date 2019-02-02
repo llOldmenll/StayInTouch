@@ -6,12 +6,14 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.oldmen.stayintouch.CustomApplication
 import com.oldmen.stayintouch.domain.models.FavoriteArticle
-import kotlinx.coroutines.experimental.DefaultDispatcher
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
-class FavoritesPresenter : MvpPresenter<FavoritesView>() {
+class FavoritesPresenter : MvpPresenter<FavoritesView>(), CoroutineScope {
+
+    private val job = Job()
+    override val coroutineContext: CoroutineContext = job + Dispatchers.IO
 
     fun subscribeToArticles(lifecycleOwner: LifecycleOwner) {
         CustomApplication.dataBase.getFavoriteArticleDao().getAll().observe(lifecycleOwner,
@@ -21,12 +23,10 @@ class FavoritesPresenter : MvpPresenter<FavoritesView>() {
     }
 
     fun deleteFromFavorite(favoriteArticle: FavoriteArticle) {
-        launch {
-            withContext(DefaultDispatcher) {
-                val db = CustomApplication.dataBase
-                db.getFavoriteArticleDao().delete(favoriteArticle)
-                db.getArticleDao().update(favoriteArticle.toArticle())
-            }
+        launch(Dispatchers.Default) {
+            val db = CustomApplication.dataBase
+            db.getFavoriteArticleDao().delete(favoriteArticle)
+            db.getArticleDao().update(favoriteArticle.toArticle())
         }
     }
 
